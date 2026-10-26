@@ -31,10 +31,9 @@ def process_3d(job):
         img = Image.open(BytesIO(img_data))
 
         # ... (sisa kode proses Trellis ke bawah tetap sama) ...
+# 3. Proses Trellis (Pastiin baris di bawah ini NGGAK ADA tanda #)
+        outputs = pipeline(img)
 
-        # 3. Proses Trellis (Uncomment kalau library Trellis udah di-install lengkap)
-        # outputs = pipeline(img)
-        
         glb_path = "/tmp/hasil_generate.glb"
         outputs.save_glb(glb_path)
         
