@@ -36,10 +36,10 @@ def process_3d(job):
         # outputs = pipeline(img)
         
         glb_path = "/tmp/hasil_generate.glb"
-        # outputs.save_glb(glb_path)
+        outputs.save_glb(glb_path)
         
         # DUMMY FILE UNTUK TESTING (Hapus 2 baris ini kalau model asli udah jalan)
-        with open(glb_path, "w") as f: f.write("dummy 3d data")
+        #with open(glb_path, "w") as f: f.write("dummy 3d data")
 
         # 4. Ubah file .glb ke Base64 biar bisa langsung dikirim ke Web/Frontend
         with open(glb_path, "rb") as f:
