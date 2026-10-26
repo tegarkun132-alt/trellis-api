@@ -12,17 +12,25 @@ print("Memuat model microsoft/TRELLIS.2-4B...")
 # pipeline = TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS.2-4B")
 # pipeline.to("cuda")
 
+# ... (bagian atas tetap sama) ...
+
 def process_3d(job):
     job_input = job['input']
-    image_url = job_input.get('image_url')
+    image_base64 = job_input.get('image_base64')
     
-    if not image_url:
-        return {"error": "Masukkan image_url"}
+    if not image_base64:
+        return {"error": "Masukkan image_base64"}
 
     try:
-        # 2. Download Gambar dari Web Lu
-        req = requests.get(image_url)
-        img = Image.open(BytesIO(req.content))
+        # Hapus awalan "data:image/png;base64," jika ada dari HTML
+        if "," in image_base64:
+            image_base64 = image_base64.split(",")[1]
+            
+        # Decode gambar dari Base64
+        img_data = base64.b64decode(image_base64)
+        img = Image.open(BytesIO(img_data))
+
+        # ... (sisa kode proses Trellis ke bawah tetap sama) ...
 
         # 3. Proses Trellis (Uncomment kalau library Trellis udah di-install lengkap)
         # outputs = pipeline(img)
