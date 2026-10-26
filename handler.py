@@ -5,14 +5,11 @@ import os
 from io import BytesIO
 from PIL import Image
 
-# 1. INIT MODEL (Berjalan sekali saat mesin nyala biar proses cepat)
+# 1. INIT MODEL (Tanda pagar sudah dihapus agar model menyala)
 print("Memuat model microsoft/TRELLIS.2-4B...")
-# Catatan: Sesuaikan import ini dengan dokumentasi resmi repo GitHub Trellis
-# fromh trellis.pipelines import TrellisImageTo3DPipeline
-# pipeline = TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS.2-4B")
-# pipeline.to("cuda")
-
-# ... (bagian atas tetap sama) ...
+from trellis.pipelines import TrellisImageTo3DPipeline
+pipeline = TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS.2-4B")
+pipeline.cuda()
 
 def process_3d(job):
     job_input = job['input']
@@ -30,40 +27,20 @@ def process_3d(job):
         img_data = base64.b64decode(image_base64)
         img = Image.open(BytesIO(img_data))
 
-        # 3. PROSES KE AI TRELLIS (Pastikan baris ini persis seperti ini)
+        # 3. PROSES KE AI TRELLIS
         outputs = pipeline(img)
 
         # 4. Simpan hasil 3D
         glb_path = "/tmp/hasil_generate.glb"
         outputs.save_glb(glb_path)
         
-        # 5. Baca file 3D dan jadikan Base64 untuk dikirim balik
+        # 5. Baca file 3D dan jadikan Base64 untuk dikirim ke Web
         with open(glb_path, "rb") as f:
             glb_base64 = base64.b64encode(f.read()).decode('utf-8')
             
-        return {
-            "status": "success",
-            "model_base64": glb_base64
-        }
-        
-    except Exception as e:
-        return {"error": str(e)}
-        # ... (sisa kode proses Trellis ke bawah tetap sama) ...
-# 3. Proses Trellis (Pastiin baris di bawah ini NGGAK ADA tanda #)
-        outputs = pipeline(img)
-
-        glb_path = "/tmp/hasil_generate.glb"
-        outputs.save_glb(glb_path)
-        
-        # DUMMY FILE UNTUK TESTING (Hapus 2 baris ini kalau model asli udah jalan)
-        #with open(glb_path, "w") as f: f.write("dummy 3d data")
-
-        # 4. Ubah file .glb ke Base64 biar bisa langsung dikirim ke Web/Frontend
-        with open(glb_path, "rb") as f:
-            glb_base64 = base64.b64encode(f.read()).decode('utf-8')
-            
-        # Bersihkan file temporary biar memori gak penuh
-        os.remove(glb_path)
+        # 6. Bersihkan file temporary biar memori gak penuh
+        if os.path.exists(glb_path):
+            os.remove(glb_path)
 
         return {
             "status": "success",
