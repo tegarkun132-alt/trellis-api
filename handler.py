@@ -22,14 +22,32 @@ def process_3d(job):
         return {"error": "Masukkan image_base64"}
 
     try:
-        # Hapus awalan "data:image/png;base64," jika ada dari HTML
+        # 1. Hapus awalan data:image jika ada
         if "," in image_base64:
             image_base64 = image_base64.split(",")[1]
             
-        # Decode gambar dari Base64
+        # 2. Decode gambar dari web
         img_data = base64.b64decode(image_base64)
         img = Image.open(BytesIO(img_data))
 
+        # 3. PROSES KE AI TRELLIS (Pastikan baris ini persis seperti ini)
+        outputs = pipeline(img)
+
+        # 4. Simpan hasil 3D
+        glb_path = "/tmp/hasil_generate.glb"
+        outputs.save_glb(glb_path)
+        
+        # 5. Baca file 3D dan jadikan Base64 untuk dikirim balik
+        with open(glb_path, "rb") as f:
+            glb_base64 = base64.b64encode(f.read()).decode('utf-8')
+            
+        return {
+            "status": "success",
+            "model_base64": glb_base64
+        }
+        
+    except Exception as e:
+        return {"error": str(e)}
         # ... (sisa kode proses Trellis ke bawah tetap sama) ...
 # 3. Proses Trellis (Pastiin baris di bawah ini NGGAK ADA tanda #)
         outputs = pipeline(img)
