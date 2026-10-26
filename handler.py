@@ -2,14 +2,21 @@ import runpod
 import requests
 import base64
 import os
+import sys
 from io import BytesIO
 from PIL import Image
 
-# 1. INIT MODEL (Tanda pagar sudah dihapus agar model menyala)
+# 0. TAMBAHAN GPS: Paksa Python baca folder /app biar modul 'trellis' terbaca
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+sys.path.append("/app")
+
+# 1. INIT MODEL
 print("Memuat model microsoft/TRELLIS.2-4B...")
 from trellis.pipelines import TrellisImageTo3DPipeline
 pipeline = TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS.2-4B")
 pipeline.cuda()
+
+# ... (bagian def process_3d(job): ke bawah biarin aja sama kayak tadi) ...
 
 def process_3d(job):
     job_input = job['input']
