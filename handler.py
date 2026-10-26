@@ -8,7 +8,7 @@ from PIL import Image
 # 1. INIT MODEL (Berjalan sekali saat mesin nyala biar proses cepat)
 print("Memuat model microsoft/TRELLIS.2-4B...")
 # Catatan: Sesuaikan import ini dengan dokumentasi resmi repo GitHub Trellis
-# from trellis.pipelines import TrellisImageTo3DPipeline
+# fromh trellis.pipelines import TrellisImageTo3DPipeline
 # pipeline = TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS.2-4B")
 # pipeline.to("cuda")
 
